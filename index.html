@@ -67,6 +67,36 @@
           >.
         </p>
       </section>
+
+      <section>
+        <h3>Relationship with Nostr npubs</h3>
+        <p>
+          In the Nostr ecosystem, public keys are often displayed as "npubs" (e.g., <code>npub1...</code>), 
+          which are Bech32 encoded versions of the raw public keys for human-friendly display.
+        </p>
+        
+        <p>
+          It is important to note that Nostr DIDs use the raw 64-character hexadecimal public key, 
+          not the npub format. npubs should be considered display-only identifiers to improve readability 
+          in user interfaces.
+        </p>
+
+        <p>
+          When implementing the DID Nostr method, applications SHOULD accept raw public keys for 
+          DID creation. For display in user interfaces, applications MAY choose to show the 
+          corresponding npub alongside the DID.
+        </p>
+
+        <p>
+          Example mapping:
+          <ul>
+            <li>Raw public key: <code>124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code></li>
+            <li>DID: <code>did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code></li>
+            <li>Display npub: <code>npub1cpxejnc58zpcuyh0pt8gvkzpv34qxceu0sqp7jec2nk9nut7p5zs4zyx4c</code></li>
+          </ul>
+        </p>
+      </section>
+
       <section>
         <h3>Example DID</h3>
         <p>The following is a template for Nostr DIDs:</p>
