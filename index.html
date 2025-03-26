@@ -82,7 +82,14 @@
         }
     ],
     "authentication": ["#key1"],
-    "assertionMethod": ["#key1"]
+    "assertionMethod": ["#key1"],
+    "service": [
+        {
+            "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#relay1",
+            "type": "Relay",
+            "serviceEndpoint": "wss://some-nostr-relay.org/"
+        }
+    ]
 }
   </pre
         >
@@ -91,6 +98,21 @@
       <section>
         <h3>Additional Terminology</h3>
         <p>The term <dfn>relay</dfn> refers to a Nostr relay.</p>
+      </section>
+
+      <section>
+        <h3>Service Field for Relays</h3>
+        <p>
+          The DID Document SHOULD include a service field to explicitly define
+          relevant relays. This provides a standardized approach for
+          applications resolving a DID document to discover the relays
+          associated with the identity.
+        </p>
+        <p>
+          Each relay is represented as a service entry with type "Relay" and a
+          serviceEndpoint that specifies the WebSocket URL of the relay.
+          Multiple relays can be included in the service array.
+        </p>
       </section>
     </section>
     <section>
