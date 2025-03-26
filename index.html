@@ -44,7 +44,20 @@
         an open-source protocol that utilizes the W3C WebSockets standard.
       </p>
     </section>
-    <section id="sotd"></section>
+    <section id="sotd">
+      <p>
+        This document is a draft specification produced by the <a href="https://www.w3.org/community/nostr/">W3C Nostr Community Group</a>. 
+        It is not a W3C Standard nor is it on the W3C Standards Track.
+      </p>
+      <p>
+        This specification is intended to provide a stable foundation for implementing Nostr-based Decentralized Identifiers. 
+        Feedback and contributions are encouraged through the <a href="https://github.com/nostrcg/did-nostr">GitHub repository</a>.
+      </p>
+      <p>
+        This document is a work in progress and may be updated, replaced, or obsoleted by other documents at any time.
+        It is inappropriate to cite this document as other than work in progress.
+      </p>
+    </section>
     <!-- introduction -->
     <section class="informative">
       <h2>Introduction</h2>
@@ -164,17 +177,56 @@
       <h2>Operations</h2>
       <section>
         <h3>Create (Register)</h3>
-        Creating a did:nostr value consists of generating a cryptographic key
-        pair and encoding the public key as a 64-character lowercase string.
+        <p>
+          Creating a did:nostr identifier involves the following steps:
+        </p>
+        <ol>
+          <li>Generate a secp256k1 key pair using a cryptographically secure random number generator</li>
+          <li>Extract the public key (32 bytes)</li>
+          <li>Encode the public key as a 64-character lowercase hexadecimal string</li>
+          <li>Prefix the encoded public key with "did:nostr:" to form the complete DID</li>
+        </ol>
+        <p>
+          For example, if the generated public key in hex is:<br>
+          <code>124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code>
+        </p>
+        <p>
+          The corresponding DID would be:<br>
+          <code>did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code>
+        </p>
+        <p>
+          Note: No on-chain registration is required as the security and uniqueness are derived from the key generation process.
+        </p>
       </section>
 
       <section>
         <h3>Read (Resolve)</h3>
         <p>
-          Reading a did:nostr value is a matter of deterministically expanding the
-          value to a DID Document. This process is described in Section § 3.1
-          Create.
+          Resolving a did:nostr identifier involves the following steps:
         </p>
+        <ol>
+          <li>Parse the identifier to extract the 64-character hexadecimal public key</li>
+          <li>Construct a DID Document with the following properties:
+            <ul>
+              <li>Set the <code>id</code> field to the full DID</li>
+              <li>Include a verification method with type "SchnorrVerification2023"</li>
+              <li>Set appropriate authentication and assertionMethod references</li>
+              <li>Include any known relay endpoints in the service section</li>
+            </ul>
+          </li>
+          <li>Optionally, query known Nostr relays for metadata about the public key</li>
+        </ol>
+        <p>
+          The resolved DID Document will follow the template shown in the "Example DID" section above.
+        </p>
+        <p>
+          For relay discovery, implementations SHOULD:
+        </p>
+        <ol>
+          <li>Check a local cache of known relays for the public key</li>
+          <li>Query a set of default relays with a filter for kind 0 (metadata) events by the target public key</li>
+          <li>Include discovered relays in the service section of the DID Document</li>
+        </ol>
       </section>
 
       <section>
@@ -184,8 +236,9 @@
 
       <section>
         <h3>Delete (Revoke)</h3>
-        This DID Method does not support deactivating the DID Document.
-        <p></p>
+        <p>
+          This DID Method does not support deactivating the DID Document.
+        </p>
       </section>
     </section>
 
@@ -194,36 +247,92 @@
       <section>
         <h3>Security Considerations</h3>
         <p>
-          DID method specifications MUST include their own Security
-          Considerations sections. This section MUST consider all the
-          requirements mentioned in section 5 of [RFC3552] (page 27) for the DID
-          operations defined in the specification, including eavesdropping,
-          replay, message insertion, deletion, modification, and
-          man-in-the-middle. Potential denial of service attacks MUST be
-          identified as well.
+          The security of the did:nostr method relies on the security properties of the underlying Nostr protocol and its 
+          public key cryptography. The following security considerations apply:
         </p>
+        
+        <section>
+          <h4>Key Management</h4>
+          <p>
+            The private keys corresponding to Nostr DIDs MUST be kept secure. Loss of private keys will result in permanent 
+            loss of control over the identifier. Implementers SHOULD employ strong key management practices, including 
+            secure key generation, storage, and backup procedures.
+          </p>
+        </section>
+        
+        <section>
+          <h4>Relay Security</h4>
+          <p>
+            Nostr DIDs interact with the Nostr network through relays. These relays may have different security 
+            properties and trust models. Implementers SHOULD:
+          </p>
+          <ul>
+            <li>Use TLS (wss://) connections to relays to prevent eavesdropping and man-in-the-middle attacks</li>
+            <li>Consider using multiple relays for redundancy and to mitigate denial of service risks</li>
+            <li>Be aware that relays may choose to filter or modify events, potentially affecting DID resolution</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h4>Cryptographic Considerations</h4>
+          <p>
+            The Nostr DID method uses Schnorr signatures over the secp256k1 curve, which is considered cryptographically 
+            secure at the time of writing. However, cryptographic methods may become vulnerable over time. Implementers 
+            should stay informed about advancements in cryptanalysis that might affect the security of these signatures.
+          </p>
+        </section>
+        
         <p>
-          A full list of requirements for this section can be found at
+          For additional security requirements, refer to 
           <a href="https://www.w3.org/TR/did-core/#security-requirements">
-            W3C Decentralized Identifiers 7.3</a
-          >
+            W3C Decentralized Identifiers 7.3</a>.
         </p>
       </section>
       <section>
         <h3>Privacy Considerations</h3>
         <p>
-          DID method specifications MUST include their own Privacy
-          Considerations sections to discuss any subsection of section 5 of
-          [RFC6973] that could apply in a method-specific manner. The
-          subsections to consider are: surveillance, stored data compromise,
-          unsolicited traffic, misattribution, correlation, identification,
-          secondary use, disclosure, exclusion.
+          The did:nostr method has several privacy implications that implementers and users should be aware of:
         </p>
+        
+        <section>
+          <h4>Identifier Correlation</h4>
+          <p>
+            A Nostr DID directly incorporates a public key that may be used across multiple contexts in the Nostr ecosystem. 
+            This creates a potential correlation vector where activities under the same DID can be linked across different 
+            services or applications. Users should understand that a single did:nostr identifier does not provide 
+            compartmentalization of identity across different contexts.
+          </p>
+          <p>
+            To mitigate correlation risks, users may consider:
+          </p>
+          <ul>
+            <li>Using different DIDs for different contexts or services</li>
+            <li>Creating purpose-specific DIDs rather than using a single DID for all activities</li>
+          </ul>
+        </section>
+        
+        <section>
+          <h4>Public Nature of Nostr</h4>
+          <p>
+            Information associated with a Nostr DID is typically stored on public relays where it can be accessed by anyone. 
+            Users should be aware that DID Documents and associated Nostr events are public information. Private or sensitive 
+            data should not be included in DID Documents or directly associated with did:nostr identifiers.
+          </p>
+        </section>
+        
+        <section>
+          <h4>Service Endpoints</h4>
+          <p>
+            The service endpoints (relays) listed in a DID Document may reveal information about a user's network 
+            participation and potentially their geographic region or service preferences. Implementers should be 
+            cautious about what information might be inferred from service endpoints included in DID Documents.
+          </p>
+        </section>
+        
         <p>
-          A full list of requirements for this section can be found at
+          For additional privacy requirements, refer to 
           <a href="https://www.w3.org/TR/did-core/#privacy-requirements">
-            W3C Decentralized Identifiers 7.4</a
-          >
+            W3C Decentralized Identifiers 7.4</a>.
         </p>
       </section>
     </section>
@@ -239,6 +348,26 @@
 
     <section>
       <h2>Resources</h2>
+      <ul>
+        <li>
+          <a href="https://github.com/nostr-protocol/nostr">Nostr Protocol Specification</a> - The official specification of the Nostr protocol
+        </li>
+        <li>
+          <a href="https://www.w3.org/TR/did-core/">W3C Decentralized Identifiers (DIDs) v1.0</a> - The W3C Recommendation for Decentralized Identifiers
+        </li>
+        <li>
+          <a href="https://github.com/nostrcg/did-nostr">DID:Nostr Method GitHub Repository</a> - Source code and issue tracker for this specification
+        </li>
+        <li>
+          <a href="https://github.com/TBD54566975/did-nostr">TBD54566975 Rust Implementation</a> - Reference implementation of the did:nostr method in Rust
+        </li>
+        <li>
+          <a href="https://github.com/nostr-protocol/nips">Nostr Implementation Possibilities (NIPs)</a> - Nostr protocol extension proposals
+        </li>
+        <li>
+          <a href="https://www.rfc-editor.org/rfc/rfc6979">RFC 6979</a> - Deterministic Usage of the Digital Signature Algorithm (DSA) and Elliptic Curve Digital Signature Algorithm (ECDSA)
+        </li>
+      </ul>
     </section>
   </body>
 </html>
