@@ -133,10 +133,11 @@
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
     "verificationMethod": [
-       {
+        {
             "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#key1",
+            "type": "Multikey",
             "controller": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
-            "type": "SchnorrVerification2025"
+            "publicKeyMultibase": "fe70102124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2"
         }
     ],
     "authentication": ["#key1"],
@@ -156,6 +157,53 @@
       <section>
         <h3>Additional Terminology</h3>
         <p>The term <dfn>relay</dfn> refers to a Nostr relay.</p>
+      </section>
+
+      <section>
+        <h3>Multikey Verification Method</h3>
+        <p>
+          Nostr DIDs use the Multikey verification method to provide a standardized way to encode 
+          secp256k1 public keys for Data Integrity implementations. This method transforms the x-only 
+          BIP-340 public key from the DID identifier into a format compatible with W3C Verifiable 
+          Credentials Data Integrity specifications.
+        </p>
+        
+        <p>
+          The transformation process for creating the Multikey representation is as follows:
+        </p>
+        
+        <ol>
+          <li>Start with the x-only public key (32 bytes) from the DID identifier</li>
+          <li>Construct a 33-byte secp256k1 compressed public key by prepending a parity byte:
+            <ul>
+              <li>Use <code>0x02</code> for even y-coordinate (standard default)</li>
+              <li>Use <code>0x03</code> for odd y-coordinate (when applicable for Nostr keys)</li>
+            </ul>
+          </li>
+          <li>Prepend the multicodec varint for secp256k1 compressed public keys (<code>0xe7, 0x01</code>)</li>
+          <li>Encode the result using multibase with base16-lower encoding (<code>f</code> prefix)</li>
+          <li>Place the encoded value in the <code>publicKeyMultibase</code> field</li>
+        </ol>
+        
+        <p>
+          For example, given the x-only public key:
+          <code>124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code>
+        </p>
+        
+        <p>
+          The transformation steps would be:
+        </p>
+        <ol>
+          <li>Compressed key: <code>02124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code></li>
+          <li>With multicodec varint: <code>e70102124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code></li>
+          <li>Multibase base16-lower encoded: <code>fe70102124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code></li>
+        </ol>
+        
+        <p>
+          <strong>Note on Parity Bytes:</strong> While most implementations default to the 0x02 prefix 
+          for even y-coordinates, Nostr applications may generate keys with either 0x02 or 0x03 prefixes. 
+          Implementations should handle both cases when constructing the compressed public key format.
+        </p>
       </section>
 
       <section>
@@ -209,8 +257,8 @@
           <li>Construct a DID Document with the following properties:
             <ul>
               <li>Set the <code>id</code> field to the full DID</li>
-              <li>Include a verification method with type "SchnorrVerification2025"</li>
-              <li>Set appropriate authentication and assertionMethod references</li>
+              <li>Include a Multikey verification method, transforming the x-only public key following the multicodec/multibase encoding process</li>
+              <li>Set appropriate authentication and assertionMethod references to the verification method</li>
               <li>Include any known relay endpoints in the service section</li>
             </ul>
           </li>
