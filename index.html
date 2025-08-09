@@ -28,7 +28,10 @@
             height: 100,
             id: 'w3c-nostr'
           }
-        ]
+        ],
+        lint: {
+          "no-unused-dfns": false
+        }
       }
     </script>
   </head>
@@ -151,7 +154,7 @@
       </section>
       <section>
         <h3>Additional Terminology</h3>
-        <p>The term <dfn>relay</dfn> refers to a Nostr relay.</p>
+        <p>The term <dfn class="export">relay</dfn> refers to a Nostr relay.</p>
       </section>
 
       <section>
@@ -215,6 +218,12 @@
           Multiple relays can be included in the service array.
         </p>
       </section>
+    </section>
+    <section id="conformance">
+      <p>
+        This document defines a DID method for Nostr. Implementations MUST conform to the DID Core
+        specification [[DID-CORE]] and the requirements specified in this document.
+      </p>
     </section>
     <section>
       <h2>Operations</h2>
