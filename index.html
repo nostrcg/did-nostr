@@ -253,12 +253,37 @@
 
       <section>
         <h3>Read (Resolve)</h3>
-        <p>
-          Resolving a did:nostr identifier involves the following steps:
-        </p>
+        
+        <p>DID resolution for <code>did:nostr</code> identifiers follows this strategy:</p>
+        
         <ol>
-          <li>Parse the identifier to extract the 64-character hexadecimal public key</li>
-          <li>Construct a DID Document with the following properties:
+          <li><strong>HTTP Resolution</strong> - Check <code>https://&lt;domain&gt;/.well-known/did/nostr/&lt;pubkey&gt;.json</code></li>
+          <li><strong>Offline-first Resolution</strong> - Generate minimal DID document from public key alone</li>
+          <li><strong>Enhanced Resolution</strong> - Optionally query Nostr relays for additional metadata</li>
+        </ol>
+        
+        <section>
+          <h4>HTTP Resolution</h4>
+          <p>
+            Servers can host complete DID documents at:
+          </p>
+          <pre><code>https://example.com/.well-known/did/nostr/&lt;pubkey&gt;.json</code></pre>
+          <p>
+            Where <code>&lt;pubkey&gt;</code> is the 64-character lowercase hex public key. The endpoint SHOULD return a complete DID document (minimal or enhanced).
+          </p>
+          <p>
+            This enables fast, cacheable resolution without requiring cryptographic computation or relay queries. Servers can serve minimal documents for offline-first scenarios or enhanced documents with service endpoints and metadata.
+          </p>
+        </section>
+        
+        <section>
+          <h4>Offline-first Resolution</h4>
+          <p>
+            Resolving a did:nostr identifier offline involves the following steps:
+          </p>
+          <ol>
+            <li>Parse the identifier to extract the 64-character hexadecimal public key</li>
+            <li>Construct a DID Document with the following properties:
             <ul>
               <li>Set the <code>id</code> field to the full DID</li>
               <li>Include a Multikey verification method, transforming the x-only public key following the multicodec/multibase encoding process</li>
