@@ -125,9 +125,34 @@
       </section>
 
       <section>
-        <h3>Example DID</h3>
-        <p>The following is a template for Nostr DIDs:</p>
-        <pre class="example">
+        <h3>Example DID Documents</h3>
+        
+        <section>
+          <h4>Minimal DID Document (Offline Resolution)</h4>
+          <p>The following minimal DID document can be generated from the public key alone, without network access:</p>
+          <pre class="example">
+{
+    "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
+    "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "verificationMethod": [
+        {
+            "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#key1",
+            "type": "Multikey",
+            "controller": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+            "publicKeyMultibase": "fe70102124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2"
+        }
+    ],
+    "authentication": ["#key1"],
+    "assertionMethod": ["#key1"]
+}
+  </pre>
+          <p>This minimal document provides full cryptographic functionality for identity verification and authentication using the standardized Multikey format.</p>
+        </section>
+        
+        <section>
+          <h4>Enhanced DID Document (With Relay Services)</h4>
+          <p>When enhanced through relay queries, additional service endpoints can be included:</p>
+          <pre class="example">
 {
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
@@ -150,7 +175,8 @@
     ]
 }
   </pre>
-        <p>A resolver MUST retrieve events from relays.</p>
+          <p>This enhanced document includes service endpoints discovered through optional relay queries.</p>
+        </section>
       </section>
       <section>
         <h3>Additional Terminology</h3>
@@ -253,32 +279,58 @@
 
       <section>
         <h3>Read (Resolve)</h3>
+        
+        <section>
+          <h4>Minimal Resolution</h4>
+          <p>
+            A conforming resolver MUST be able to generate a valid DID document using only the public key from the DID identifier, without requiring network access to Nostr relays.
+          </p>
+          <p>
+            The minimal resolution process involves:
+          </p>
+          <ol>
+            <li>Parse the identifier to extract the 64-character hexadecimal public key</li>
+            <li>Construct a DID Document with the following required properties:
+              <ul>
+                <li>Set the <code>id</code> field to the full DID</li>
+                <li>Include a Multikey verification method, transforming the x-only public key following the multicodec/multibase encoding process</li>
+                <li>Set appropriate authentication and assertionMethod references to the verification method</li>
+              </ul>
+            </li>
+          </ol>
+          <p>
+            This minimal DID document provides full functionality for cryptographic verification and identity assertion without requiring network connectivity.
+          </p>
+        </section>
+        
+        <section>
+          <h4>Enhanced Resolution with Relay Queries</h4>
+          <p>
+            Optionally, resolvers MAY query known Nostr relays to enhance the DID document with additional metadata and service endpoints.
+          </p>
+          <p>
+            The enhanced resolution process adds:
+          </p>
+          <ol>
+            <li>Query known Nostr relays for metadata about the public key</li>
+            <li>Include discovered relay endpoints in the service section of the DID Document</li>
+            <li>Add any additional metadata found in kind 0 events</li>
+          </ol>
+          <p>
+            The resolved DID Document will follow the template shown in the "Example DID" section above.
+          </p>
+        </section>
         <p>
-          Resolving a did:nostr identifier involves the following steps:
-        </p>
-        <ol>
-          <li>Parse the identifier to extract the 64-character hexadecimal public key</li>
-          <li>Construct a DID Document with the following properties:
-            <ul>
-              <li>Set the <code>id</code> field to the full DID</li>
-              <li>Include a Multikey verification method, transforming the x-only public key following the multicodec/multibase encoding process</li>
-              <li>Set appropriate authentication and assertionMethod references to the verification method</li>
-              <li>Include any known relay endpoints in the service section</li>
-            </ul>
-          </li>
-          <li>Optionally, query known Nostr relays for metadata about the public key</li>
-        </ol>
-        <p>
-          The resolved DID Document will follow the template shown in the "Example DID" section above.
-        </p>
-        <p>
-          For relay discovery, implementations SHOULD:
+          For relay discovery during enhanced resolution, implementations SHOULD:
         </p>
         <ol>
           <li>Check a local cache of known relays for the public key</li>
           <li>Query a set of default relays with a filter for kind 0 (metadata) events by the target public key</li>
           <li>Include discovered relays in the service section of the DID Document</li>
         </ol>
+        <p>
+          Note that relay queries and metadata integration are OPTIONAL enhancements to the basic resolution process. Implementations MUST support minimal resolution without network access.
+        </p>
       </section>
 
       <section>
