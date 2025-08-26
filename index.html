@@ -143,7 +143,14 @@
         }
     ],
     "authentication": ["#key1"],
-    "assertionMethod": ["#key1"]
+    "assertionMethod": ["#key1"],
+    "profile": {
+        "name": "Alice",
+        "about": "Building the decentralized social web",
+        "picture": "https://example.com/alice.jpg",
+        "nip05": "alice@example.com",
+        "timestamp": 1737906600
+    }
 }
   </pre>
           <p>This minimal document provides full cryptographic functionality for identity verification and authentication using the standardized Multikey format.</p>
@@ -244,6 +251,34 @@
           Multiple relays can be included in the service array.
         </p>
       </section>
+      
+      <section>
+        <h3>Profile Field (Optional)</h3>
+        <p>
+          DID Documents MAY include a <code>profile</code> field containing public profile information 
+          that the user has chosen to share. This enables social applications to display profile 
+          information without requiring relay queries.
+        </p>
+        <pre class="example">
+"profile": {
+    "name": "Alice",
+    "about": "Building the decentralized social web",
+    "picture": "https://example.com/alice.jpg",
+    "nip05": "alice@example.com",
+    "lud16": "alice@getalby.com",
+    "website": "https://alice.example.com",
+    "timestamp": 1737906600
+}</pre>
+        <p>
+          The <code>timestamp</code> field indicates when this profile data was fetched from relays (Unix seconds), 
+          allowing clients to determine data freshness and implement intelligent caching strategies.
+        </p>
+        <p>
+          <strong>Note:</strong> While DID Core generally recommends against including personally identifiable information, 
+          social networking represents a specific use case where users explicitly publish profile information for 
+          discovery. This field is optional and should only contain information the user has chosen to make public.
+        </p>
+      </section>
     </section>
     <section id="conformance">
       <p>
@@ -298,7 +333,16 @@
             Where <code>&lt;pubkey&gt;</code> is the 64-character lowercase hex public key. The endpoint SHOULD return a complete DID document (minimal or enhanced).
           </p>
           <p>
-            This enables fast, cacheable resolution without requiring cryptographic computation or relay queries. Servers can serve minimal documents for offline-first scenarios or enhanced documents with service endpoints and metadata.
+            When serving DID documents via HTTP, servers SHOULD include the following headers:
+          </p>
+          <pre><code>Nostr-Timestamp: 1737906600
+Cache-Control: max-age=3600
+Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
+          <p>
+            The <code>Nostr-Timestamp</code> header contains the Unix timestamp when the DID document was generated or refreshed. This enables clients to check freshness without parsing the JSON body, allowing for efficient caching strategies.
+          </p>
+          <p>
+            This enables fast, cacheable resolution without requiring cryptographic computation or relay queries. Servers can serve minimal documents for offline-first scenarios or enhanced documents with service endpoints and profile metadata.
           </p>
         </section>
         
