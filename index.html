@@ -11,7 +11,7 @@
       const respecConfig = {
         specStatus: 'unofficial',
         group: 'nostr',
-        subtitle: 'Version 0.0.2',
+        subtitle: 'Version 0.0.3',
         latestVersion: 'https://nostrcg.github.io/did-nostr/',
         editors: [
           {
@@ -187,6 +187,50 @@
   </pre>
           <p>This enhanced document includes service endpoints discovered through optional relay queries.</p>
         </section>
+
+        <section>
+          <h4>Complete DID Document (With Profile and Social Graph)</h4>
+          <p>A fully enhanced DID document can include profile information and social relationships:</p>
+          <pre class="example">
+{
+    "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
+    "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "verificationMethod": [
+        {
+            "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#key1",
+            "type": "Multikey",
+            "controller": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+            "publicKeyMultibase": "fe70102124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2"
+        }
+    ],
+    "authentication": ["#key1"],
+    "assertionMethod": ["#key1"],
+    "service": [
+        {
+            "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#relay1",
+            "type": "Relay",
+            "serviceEndpoint": "wss://relay.damus.io/"
+        }
+    ],
+    "profile": {
+        "name": "Alice", 
+        "about": "Building the decentralized web",
+        "picture": "https://example.com/alice.jpg",
+        "timestamp": 1737906600
+    },
+    "follows": [
+        "did:nostr:32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
+        "did:nostr:46fcbe3065eaf1ae7811465924e48923363ff3f526bd6f73d7c184147700e3a8"
+    ],
+    "followsCount": 2
+}
+  </pre>
+          <p>This complete document enables social applications to resolve identity, profile, relays, and social graph information in a single operation.</p>
+          <p>
+            For identities with large follow lists, the service array could include a FollowsEndpoint 
+            for complete access to thousands of follows without bloating the DID document.
+          </p>
+        </section>
       </section>
       <section>
         <h3>Additional Terminology</h3>
@@ -285,6 +329,67 @@
           <strong>Note:</strong> While DID Core generally recommends against including personally identifiable information, 
           social networking represents a specific use case where users explicitly publish profile information for 
           discovery. This field is optional and should only contain information the user has chosen to make public.
+        </p>
+      </section>
+
+      <section>
+        <h3>Follows Field (Social Graph)</h3>
+        <p>
+          DID Documents MAY include a <code>follows</code> field containing a list of DIDs that the identity follows,
+          enabling the construction of decentralized social graphs. This field enhances the DID document with 
+          social relationship information discoverable through standard DID resolution.
+        </p>
+        <pre class="example">
+"follows": [
+    "did:nostr:32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
+    "did:nostr:46fcbe3065eaf1ae7811465924e48923363ff3f526bd6f73d7c184147700e3a8",
+    "did:nostr:82341f882b6eabcd2ba7f1ef90aad961cf074af15b9ef44a09f9d2a8fbfbe6a2"
+]</pre>
+        <p>
+          Each entry in the follows array is a DID that represents an identity this DID follows.
+          The follows field is derived from Nostr kind 3 "contact list" events, providing a standardized
+          way to expose social graph relationships through DID resolution.
+        </p>
+        <p>
+          The <code>follows</code> field enables applications to:
+        </p>
+        <ul>
+          <li>Build social graphs from DID resolution alone</li>
+          <li>Discover mutual connections between identities</li>
+          <li>Implement social discovery features</li>
+          <li>Cache social relationships for offline operation</li>
+        </ul>
+        <p>
+          <strong>Note:</strong> The follows field mirrors the public contact list already published in 
+          Nostr kind 3 events, making this social graph data available through standard DID resolution.
+        </p>
+        <p>
+          <strong>Scalability Consideration:</strong> For identities with large follow lists (thousands of follows),
+          implementations SHOULD use a hybrid approach:
+        </p>
+        <ul>
+          <li>Include a truncated list (e.g., first 100-500 most recent follows)</li>
+          <li>Add a <code>"followsCount"</code> property with the total count</li>
+          <li>Provide a service endpoint for complete follow list retrieval</li>
+        </ul>
+        <pre class="example">
+"follows": [
+    "did:nostr:32e182...",  // First 100 follows included
+    "did:nostr:46fcbe...",
+    // ... up to 100 entries
+],
+"followsCount": 5234,
+"service": [
+    {
+        "id": "#follows-api",
+        "type": "FollowsEndpoint",
+        "serviceEndpoint": "https://api.example.com/did/follows/{did}"
+    }
+]</pre>
+        <p>
+          This hybrid approach provides immediate access to recent follows while maintaining 
+          document size limits and offering complete data access when needed. This pattern 
+          addresses the scalability challenge shared with other social protocols like ActivityPub.
         </p>
       </section>
     </section>
@@ -388,7 +493,8 @@ Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
           <ol>
             <li>Query known Nostr relays for metadata about the public key</li>
             <li>Include discovered relay endpoints in the service section of the DID Document</li>
-            <li>Add any additional metadata found in kind 0 events</li>
+            <li>Add any additional metadata found in kind 0 (profile) events</li>
+            <li>Include social graph information from kind 3 (contact list) events in the follows field</li>
           </ol>
           <p>
             The resolved DID Document will follow the template shown in the "Example DID" section above.
@@ -399,8 +505,9 @@ Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
         </p>
         <ol>
           <li>Check a local cache of known relays for the public key</li>
-          <li>Query a set of default relays with a filter for kind 0 (metadata) events by the target public key</li>
+          <li>Query a set of default relays with a filter for kind 0 (metadata) and kind 3 (contact list) events by the target public key</li>
           <li>Include discovered relays in the service section of the DID Document</li>
+          <li>Transform kind 3 contact pubkeys to DIDs and include in the follows field</li>
         </ol>
         <p>
           Note that relay queries and metadata integration are OPTIONAL enhancements to the basic resolution process. Implementations MUST support minimal resolution without network access.
