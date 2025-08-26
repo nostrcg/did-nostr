@@ -11,7 +11,7 @@
       const respecConfig = {
         specStatus: 'unofficial',
         group: 'nostr',
-        subtitle: 'Version 0.0.1',
+        subtitle: 'Version 0.0.2',
         latestVersion: 'https://nostrcg.github.io/did-nostr/',
         editors: [
           {
@@ -273,8 +273,13 @@
     "timestamp": 1737906600
 }</pre>
         <p>
-          The <code>timestamp</code> field indicates when this profile data was fetched from relays (Unix seconds), 
-          allowing clients to determine data freshness and implement intelligent caching strategies.
+          The <code>timestamp</code> field contains the <code>created_at</code> value from the latest Nostr profile event (Unix seconds), 
+          allowing clients to determine profile freshness and implement intelligent caching strategies.
+        </p>
+        <p>
+          <strong>Note:</strong> For Nostr developers: the <code>timestamp</code> field contains the same value as 
+          <code>event.created_at</code> from the most recent kind 0 profile event. This allows clients to determine 
+          if their cached profile data is newer or older than what's in the DID document without querying relays.
         </p>
         <p>
           <strong>Note:</strong> While DID Core generally recommends against including personally identifiable information, 
