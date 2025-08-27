@@ -11,7 +11,7 @@
       const respecConfig = {
         specStatus: 'unofficial',
         group: 'nostr',
-        subtitle: 'Version 0.0.2',
+        subtitle: 'Version 0.0.3',
         latestVersion: 'https://nostrcg.github.io/did-nostr/',
         editors: [
           {
@@ -333,6 +333,9 @@
         
         <section>
           <h4>HTTP Resolution</h4>
+          <p>
+            <strong>Note:</strong> Resolvers MAY check NIP-05 endpoints for a <code>didResolver</code> field to locate HTTP-hosted DID documents before querying relays.
+          </p>
           <p>
             Servers can host complete DID documents at:
           </p>
