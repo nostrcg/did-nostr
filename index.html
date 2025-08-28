@@ -11,7 +11,7 @@
       const respecConfig = {
         specStatus: 'unofficial',
         group: 'nostr',
-        subtitle: 'Version 0.0.3',
+        subtitle: 'Version 0.0.4',
         latestVersion: 'https://nostrcg.github.io/did-nostr/',
         editors: [
           {
@@ -449,6 +449,9 @@ Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
           </p>
           <p>
             This enables fast, cacheable resolution without requiring cryptographic computation or relay queries. Servers can serve minimal documents for offline-first scenarios or enhanced documents with service endpoints and profile metadata.
+          </p>
+          <p>
+            <strong>Note:</strong> Resolvers MAY check NIP-05 endpoints for a <code>didResolver</code> field to locate HTTP-hosted DID documents before querying relays.
           </p>
         </section>
         
