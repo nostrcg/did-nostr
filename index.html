@@ -11,7 +11,7 @@
       const respecConfig = {
         specStatus: 'unofficial',
         group: 'nostr',
-        subtitle: 'Version 0.0.4',
+        subtitle: 'Version 0.0.7',
         latestVersion: 'https://nostrcg.github.io/did-nostr/',
         editors: [
           {
@@ -214,8 +214,7 @@
     "follows": [
         "did:nostr:32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
         "did:nostr:46fcbe3065eaf1ae7811465924e48923363ff3f526bd6f73d7c184147700e3a8"
-    ],
-    "followsCount": 2
+    ]
 }
   </pre>
           <p>This complete document enables social applications to resolve identity, profile, relays, and social graph information in a single operation.</p>
@@ -362,7 +361,6 @@
         </p>
         <ul>
           <li>Include a truncated list (e.g., first 100-500 most recent follows)</li>
-          <li>Add a <code>"followsCount"</code> property with the total count</li>
           <li>Provide a service endpoint for complete follow list retrieval</li>
         </ul>
         <pre class="example">
@@ -371,7 +369,6 @@
     "did:nostr:46fcbe...",
     // ... up to 100 entries
 ],
-"followsCount": 5234,
 "service": [
     {
         "id": "#follows-api",
