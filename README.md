@@ -83,8 +83,7 @@ When a Nostr DID is resolved, it produces a DID Document like this:
   "follows": [
     "did:nostr:32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
     "did:nostr:46fcbe3065eaf1ae7811465924e48923363ff3f526bd6f73d7c184147700e3a8"
-  ],
-  "followsCount": 2
+  ]
 }
 ```
 
