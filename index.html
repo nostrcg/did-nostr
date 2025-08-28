@@ -11,7 +11,7 @@
       const respecConfig = {
         specStatus: 'unofficial',
         group: 'nostr',
-        subtitle: 'Version 0.0.4',
+        subtitle: 'Version 0.0.5',
         latestVersion: 'https://nostrcg.github.io/did-nostr/',
         editors: [
           {
@@ -288,6 +288,7 @@
         <p>
           Each relay is represented as a service entry with type "Relay" and a
           serviceEndpoint that specifies the WebSocket URL of the relay.
+          Relay URLs at the origin level MUST include a trailing slash (e.g., <code>wss://relay.example.com/</code>).
           Multiple relays can be included in the service array.
         </p>
       </section>
