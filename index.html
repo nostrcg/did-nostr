@@ -91,6 +91,11 @@
         </p>
 
         <p>
+          All DID documents MUST include a <code>type</code> field with the value <code>"DIDNostr"</code> 
+          to enable proper linked data processing and disambiguation per httpRange-14.
+        </p>
+
+        <p>
           Example Nostr DID:
           <code
             >did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2</code
@@ -137,6 +142,7 @@
 {
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "type": "DIDNostr",
     "verificationMethod": [
         {
             "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#key1",
@@ -159,6 +165,7 @@
 {
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "type": "DIDNostr",
     "verificationMethod": [
         {
             "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#key1",
@@ -188,6 +195,7 @@
 {
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "type": "DIDNostr",
     "verificationMethod": [
         {
             "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#key1",
@@ -287,6 +295,7 @@
         <p>
           Each relay is represented as a service entry with type "Relay" and a
           serviceEndpoint that specifies the WebSocket URL of the relay.
+          Relay URLs at the origin level MUST include a trailing slash (e.g., <code>wss://relay.example.com/</code>).
           Multiple relays can be included in the service array.
         </p>
       </section>
@@ -465,6 +474,7 @@ Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
             <li>Construct a DID Document with the following required properties:
               <ul>
                 <li>Set the <code>id</code> field to the full DID</li>
+                <li>Set the <code>type</code> field to <code>"DIDNostr"</code></li>
                 <li>Include a Multikey verification method, transforming the x-only public key following the multicodec/multibase encoding process</li>
                 <li>Set appropriate authentication and assertionMethod references to the verification method</li>
               </ul>
