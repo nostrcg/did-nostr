@@ -11,7 +11,7 @@
       const respecConfig = {
         specStatus: 'unofficial',
         group: 'nostr',
-        subtitle: 'Version 0.0.7',
+        subtitle: 'Version 0.0.8',
         latestVersion: 'https://nostrcg.github.io/did-nostr/',
         editors: [
           {
@@ -148,6 +148,11 @@
 {
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "alsoKnownAs": [
+        "https://alice.example.com/#me",
+        "https://social.example.com/@alice",
+        "at://alice.bsky.social"
+    ],
     "type": "DIDNostr",
     "verificationMethod": [
         {
@@ -171,6 +176,11 @@
 {
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "alsoKnownAs": [
+        "https://alice.example.com/#me",
+        "https://social.example.com/@alice",
+        "at://alice.bsky.social"
+    ],
     "type": "DIDNostr",
     "verificationMethod": [
         {
@@ -201,6 +211,11 @@
 {
     "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
     "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
+    "alsoKnownAs": [
+        "https://alice.example.com/#me",
+        "https://social.example.com/@alice",
+        "at://alice.bsky.social"
+    ],
     "type": "DIDNostr",
     "verificationMethod": [
         {
@@ -303,6 +318,57 @@
           serviceEndpoint that specifies the WebSocket URL of the relay.
           Relay URLs at the origin level MUST include a trailing slash (e.g., <code>wss://relay.example.com/</code>).
           Multiple relays can be included in the service array.
+        </p>
+      </section>
+
+      <section>
+        <h3>Also Known As Field (Optional)</h3>
+        <p>
+          DID Documents MAY include an <code>alsoKnownAs</code> field as defined in the 
+          <a href="https://www.w3.org/TR/did-core/#also-known-as">DID Core specification</a>. 
+          This field contains an array of identifiers that are asserted to refer to the same entity 
+          as the DID subject. These can be other DIDs or different types of URIs representing the 
+          same identity across various platforms and protocols.
+        </p>
+        <pre class="example">
+"alsoKnownAs": [
+    "https://alice.example.com/#me",                // WebID
+    "https://social.example.com/@alice",            // ActivityPub/Mastodon handle
+    "at://alice.bsky.social",                       // Bluesky AT Protocol identifier
+    "did:key:z6MkpTHR8VNsBxYAAWHut2Geadd9jSwuBV8xRoAnwWsdvktH", // Another DID
+    "https://twitter.com/alice",                    // Social media profile
+    "https://github.com/alice"                      // Developer profile
+]</pre>
+        <p>
+          The <code>alsoKnownAs</code> property enables cross-platform identity linking and verification.
+          Common use cases include:
+        </p>
+        <ul>
+          <li>Linking a Nostr identity to a WebID for Solid applications</li>
+          <li>Connecting to ActivityPub identities for federated social networks</li>
+          <li>Associating with Bluesky AT Protocol handles</li>
+          <li>Referencing traditional social media profiles</li>
+          <li>Establishing equivalence with other DIDs</li>
+          <li>Linking to professional or developer profiles</li>
+        </ul>
+        <p>
+          <strong>Important:</strong> Including an identifier in the <code>alsoKnownAs</code> field 
+          represents a claim by the DID controller. Applications SHOULD verify these claims when 
+          possible, such as checking for reciprocal references or using platform-specific verification 
+          mechanisms.
+        </p>
+        <p>
+          <strong>Nostr Integration:</strong> Users can include the <code>alsoKnownAs</code> field in their 
+          Nostr kind 0 profile metadata event. This creates a cryptographically signed public attestation 
+          of the identity linkages, leveraging Nostr's built-in signature verification. When the field is 
+          present in a kind 0 event, it provides stronger assurance of the claimed associations since the 
+          attestation is signed by the user's private key and can be independently verified by any client.
+        </p>
+        <p>
+          <strong>Privacy Consideration:</strong> The <code>alsoKnownAs</code> field creates public 
+          linkages between identities. Users should carefully consider privacy implications before 
+          associating identities across different platforms, as this information becomes part of the 
+          publicly resolvable DID document.
         </p>
       </section>
       
