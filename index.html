@@ -633,6 +633,20 @@ Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
     <section>
       <h2>Implementations</h2>
       <p>
+        The following implementations of the did:nostr method are available:
+      </p>
+      <ul>
+        <li>
+          <a href="https://nostr.rocks/.well-known/did/nostr/">nostr.rocks HTTP Resolver</a> - Production HTTP resolver implementing the <code>.well-known</code> path resolution method. Returns compliant DID documents with Multikey verification methods.
+        </li>
+        <li>
+          <a href="https://nostrapps.github.io/did-explorer/">DID:nostr Explorer</a> (<a href="https://github.com/nostrapps/did-explorer">source</a>) - Web-based explorer for viewing DID documents, profiles, and follows. Demonstrates the spec in action with a visual interface.
+        </li>
+        <li>
+          <a href="https://github.com/block-core/nostr-did-resolver">nostr-did-resolver</a> - TypeScript/JavaScript library for resolving did:nostr identifiers using relay discovery.
+        </li>
+      </ul>
+      <p>
         Block, Inc. previously developed a related implementation of the did:nostr method in Rust, but this work has been discontinued and archived. The archived repository can be found at
         <a href="https://github.com/TBD54566975/did-nostr"
           >https://github.com/TBD54566975/did-nostr</a
