@@ -92,7 +92,7 @@
         <p>
           The Nostr DID scheme `did:nostr:pubkey` is based on the encoding of a
           public key. The public key is represented as a 64-character, lowercase
-          string. The prefix <code>did:nostr</code> should be in lowercase, as
+          string. The prefix <code>did:nostr</code> SHOULD be in lowercase, as
           per the DID specification.
         </p>
 
@@ -300,8 +300,8 @@
         
         <p>
           <strong>Note on Parity Bytes:</strong> While most implementations default to the 0x02 prefix 
-          for even y-coordinates, Nostr applications may generate keys with either 0x02 or 0x03 prefixes. 
-          Implementations should handle both cases when constructing the compressed public key format.
+          for even y-coordinates, Nostr applications may generate keys with either 0x02 or 0x03 prefixes.
+          Implementations SHOULD handle both cases when constructing the compressed public key format.
         </p>
       </section>
 
