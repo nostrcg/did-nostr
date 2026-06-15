@@ -302,6 +302,20 @@
           <strong>Note on Parity Bytes:</strong> While most implementations default to the 0x02 prefix 
           for even y-coordinates, Nostr applications may generate keys with either 0x02 or 0x03 prefixes.
           Implementations SHOULD handle both cases when constructing the compressed public key format.
+          Both parities occur in practice because a key may be derived by tweaking. For example, taproot
+          or <a href="https://blocktrails.org/">blocktrails</a> key-chaining adds a scalar to the key at
+          each step, so the resulting point's y-coordinate parity is not predictable in advance and the
+          true parity MUST be carried rather than assumed to be even.
+        </p>
+        <p>
+          The <code>Multikey</code> representation (rather than a raw-hex sibling encoding) was adopted
+          following cross-Community-Group discussion in
+          <a href="https://github.com/w3c-ccg/community/issues/254">w3c-ccg/community#254</a> (Data
+          Integrity BIP340 Cryptosuite); see the
+          <a href="https://lists.w3.org/Archives/Public/public-credentials/2025Aug/0014.html">CCG
+          mailing-list rationale</a>. The DID identifier remains the raw lowercase hexadecimal public
+          key; the verification method uses <code>Multikey</code> for compatibility with W3C Data
+          Integrity tooling.
         </p>
       </section>
 
