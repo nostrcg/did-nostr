@@ -262,7 +262,7 @@
         "name": "Alice", 
         "about": "Building the decentralized web",
         "picture": "https://example.com/alice.jpg",
-        "timestamp": 1737906600
+        "created_at": 1737906600
     },
     "follows": [
         "did:nostr:32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
@@ -427,17 +427,18 @@
     "nip05": "alice@example.com",
     "lud16": "alice@getalby.com",
     "website": "https://alice.example.com",
-    "timestamp": 1737906600
+    "created_at": 1737906600
 }</pre>
         <p>
-          The <code>timestamp</code> field contains the <code>created_at</code> value from the latest Nostr profile event (Unix seconds),
-          allowing clients to determine profile freshness and implement intelligent caching strategies. It is the
-          part-level provenance for the profile; the subject-level aggregate across all signed parts is the
+          The <code>created_at</code> field contains the <code>event.created_at</code> of the latest Nostr
+          profile (kind 0) event, in Unix seconds, allowing clients to determine profile freshness and
+          implement intelligent caching strategies. It is the part-level provenance for the profile; the
+          subject-level aggregate across all signed parts is the
           <a href="#modified-field"><code>modified</code></a> field.
         </p>
         <p>
-          <strong>Note:</strong> For Nostr developers: the <code>timestamp</code> field contains the same value as 
-          <code>event.created_at</code> from the most recent kind 0 profile event. This allows clients to determine 
+          <strong>Note:</strong> For Nostr developers: the <code>created_at</code> field is
+          <code>event.created_at</code> from the most recent kind 0 profile event. This allows clients to determine
           if their cached profile data is newer or older than what's in the DID document without querying relays.
         </p>
         <p>
