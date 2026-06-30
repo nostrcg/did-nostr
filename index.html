@@ -411,7 +411,7 @@
         <p>
           The <code>timestamp</code> field contains the <code>created_at</code> value from the latest Nostr profile event (Unix seconds),
           allowing clients to determine profile freshness and implement intelligent caching strategies. It is the
-          part-level provenance for the profile; the document-level aggregate across all signed parts is the
+          part-level provenance for the profile; the subject-level aggregate across all signed parts is the
           <a href="#modified-field"><code>modified</code></a> field.
         </p>
         <p>
@@ -486,10 +486,10 @@
       </section>
 
       <section id="modified-field">
-        <h3>Modified Field (Document Provenance)</h3>
+        <h3>Modified Field (DID Subject Provenance)</h3>
         <p>
           A DID Document that composes signed parts (profile, follows, relays) SHOULD include a
-          <code>modified</code> field giving the document's most recent change time:
+          <code>modified</code> field giving the DID subject's most recent change time:
         </p>
         <pre class="example">
 "modified": "2025-01-26T15:30:00Z"</pre>
