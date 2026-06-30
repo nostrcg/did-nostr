@@ -575,11 +575,13 @@
         <section>
           <h4>HTTP Resolution</h4>
           <p>
-            Servers can host complete DID documents at:
+            The HTTP representation of a <code>did:nostr</code> document MUST be located at:
           </p>
-          <pre><code>https://example.com/.well-known/did/nostr/&lt;pubkey&gt;.json</code></pre>
+          <pre><code>https://&lt;domain&gt;/.well-known/did/nostr/&lt;pubkey&gt;.json</code></pre>
           <p>
-            Where <code>&lt;pubkey&gt;</code> is the 64-character lowercase hex public key. The endpoint SHOULD return a complete DID document (minimal or enhanced).
+            where <code>&lt;pubkey&gt;</code> is the 64-character lowercase hexadecimal public key and the path
+            ends in the <code>.json</code> suffix. The endpoint SHOULD return a complete DID document (minimal
+            or enhanced) with media type <code>application/did+json</code>.
           </p>
           <p>
             When serving DID documents via HTTP, servers SHOULD include the following headers:
@@ -618,7 +620,7 @@ Last-Modified: Sun, 26 Jan 2025 15:50:00 GMT</code></pre>
                 <li>Set the <code>id</code> field to the full DID</li>
                 <li>Set the <code>type</code> field to <code>"DIDNostr"</code></li>
                 <li>Include a Multikey verification method, transforming the x-only public key following the multicodec/multibase encoding process</li>
-                <li>Set appropriate authentication and assertionMethod references to the verification method</li>
+                <li>Set <code>authentication</code> and <code>assertionMethod</code> to reference the verification method using a relative DID URL (<code>#key1</code>); the verification method's own <code>id</code> and <code>controller</code> remain absolute</li>
               </ul>
             </li>
           </ol>
@@ -661,13 +663,21 @@ Last-Modified: Sun, 26 Jan 2025 15:50:00 GMT</code></pre>
 
       <section>
         <h3>Update (Replace)</h3>
-        <p>This DID Method does not support updating the DID Document.</p>
+        <p>
+          The <code>did:nostr</code> identifier is permanent: the key-to-DID binding cannot be changed.
+          The DID document, however, is a projection of signed Nostr events and is updated through the event
+          layer &mdash; publishing a newer kind 0 (profile), kind 3 (follows), or kind 10002 (relays) event
+          changes what the document projects on the next resolution. The in-graph
+          <a href="#modified-field"><code>modified</code></a> field reflects the most recent such change.
+        </p>
       </section>
 
       <section>
-        <h3>Delete (Revoke)</h3>
+        <h3>Deactivate (Revoke)</h3>
         <p>
-          This DID Method does not support deactivating the DID Document.
+          This version of the method defines no native mechanism for key rotation or deactivation: if the
+          controller's key is lost or compromised, there is no in-method recovery. Defining rotation and
+          deactivation semantics is an open item and is expected in a future revision.
         </p>
       </section>
     </section>
