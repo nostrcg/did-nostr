@@ -169,7 +169,7 @@
             "#key1"
           ],
           "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
-          "modified": "2025-01-26T15:30:00Z",
+          "modified": "2025-01-26T15:50:00Z",
           "service": [
             {
               "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#relay1",
@@ -218,7 +218,7 @@
             "did:nostr:46fcbe3065eaf1ae7811465924e48923363ff3f526bd6f73d7c184147700e3a8"
           ],
           "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
-          "modified": "2025-01-26T15:30:00Z",
+          "modified": "2025-01-26T15:50:00Z",
           "profile": {
             "about": "Building the decentralized web",
             "created_at": 1737906600,
@@ -230,7 +230,7 @@
           },
           "service": [
             {
-              "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#relay",
+              "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2#relay1",
               "serviceEndpoint": "wss://relay.damus.io/",
               "type": "Relay"
             }
