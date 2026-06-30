@@ -581,9 +581,10 @@
           <p>
             where <code>&lt;pubkey&gt;</code> is the 64-character lowercase hexadecimal public key and the path
             ends in the <code>.json</code> suffix. The endpoint SHOULD return a complete DID document (minimal
-            or enhanced). These documents are JSON-LD &mdash; they include a <code>@context</code> &mdash; so
-            <code>application/ld+json</code> is the natural media type; for compatibility with DID tooling,
-            <code>application/did+json</code> (and <code>application/did+ld+json</code>) are equally acceptable.
+            or enhanced). These documents are JSON &mdash; and, via their <code>@context</code>, JSON-LD &mdash;
+            so <code>application/json</code> and <code>application/ld+json</code> apply; for compatibility with
+            DID tooling, <code>application/did+json</code> (and <code>application/did+ld+json</code>) are
+            equally acceptable.
           </p>
           <p>
             When serving DID documents via HTTP, servers SHOULD include the following headers:
