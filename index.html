@@ -502,25 +502,15 @@
         </p>
         <p>
           Because the value is derived solely from the signed source events, every mirror computes the same
-          <code>modified</code> for the same state. It is part of the document graph (not an HTTP header), so
-          it is signable, content-addressed, and mirror-independent. Only changes to signed subject data
-          affect it; resolver- or representation-level changes (which mirror served the document, formatting)
-          do not, and are conveyed instead by the <code>ETag</code> / <code>Last-Modified</code> HTTP headers.
+          <code>modified</code> for the same state, and only changes to signed subject data affect it.
         </p>
         <p>
-          The <code>modified</code> field lets a consumer detect staleness and avoid overwriting newer state
-          with older &mdash; for example, an application about to publish a follow list can compare its cached
-          kind&nbsp;3 <code>created_at</code> against the document's <code>modified</code> and re-fetch before
-          writing rather than silently replacing a newer list. A consumer performing such an anti-overwrite
-          check MUST NOT treat a missing <code>modified</code> as authoritative evidence that its cached copy
-          is current; absence means the change time is unknown, and the consumer MUST fall back to its
-          conservative path.
-        </p>
-        <p>
-          <strong>Note:</strong> The subject-level <code>modified</code> is distinct from the part-level
-          <code>profile.timestamp</code>: <code>modified</code> is an ISO&nbsp;8601 aggregate over all signed
-          parts, while <code>profile.timestamp</code> remains the kind&nbsp;0 <code>created_at</code> in Unix
-          seconds. They coincide only when the profile is the most recently changed part.
+          This lets a consumer detect staleness and avoid overwriting newer state with older &mdash; for
+          example, an application about to publish a follow list can compare its cached kind&nbsp;3
+          <code>created_at</code> against the document's <code>modified</code> and re-fetch before writing.
+          A consumer performing such a check MUST NOT treat a missing <code>modified</code> as evidence that
+          its cached copy is current; absence means the change time is unknown, and the consumer MUST fall
+          back to its conservative path.
         </p>
       </section>
     </section>
@@ -583,18 +573,12 @@
 Cache-Control: max-age=3600
 Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
           <p>
-            Servers SHOULD include an <code>ETag</code> as an opaque validator for the exact document
-            representation, enabling standard <code>If-None-Match</code> conditional requests. The
-            <code>ETag</code> changes whenever the served bytes change, so it captures representation-level
-            changes (including resolver- or mirror-specific differences) that the in-graph
-            <code>modified</code> field deliberately does not. Its computation basis is
-            implementation-defined.
-          </p>
-          <p>
-            Freshness of the subject's signed state is conveyed in-document by the <code>modified</code>
-            field (see <a href="#modified-field">Modified Field</a>), which is mirror-independent and covered
-            by the document hash. Earlier drafts defined a <code>Nostr-Timestamp</code> header for this
-            purpose; it is removed in favor of in-graph <code>modified</code>.
+            Servers SHOULD include an <code>ETag</code> as an opaque validator for the document
+            representation, enabling standard <code>If-None-Match</code> conditional requests; its computation
+            basis is implementation-defined. The <code>ETag</code> changes whenever the served bytes change,
+            so it captures representation-level differences (such as which mirror served the document) that
+            the in-graph <a href="#modified-field"><code>modified</code></a> field does not. The earlier
+            <code>Nostr-Timestamp</code> header is removed in favor of <code>modified</code>.
           </p>
           <p>
             This enables fast, cacheable resolution without requiring cryptographic computation or relay queries. Servers can serve minimal documents for offline-first scenarios or enhanced documents with service endpoints and profile metadata.
