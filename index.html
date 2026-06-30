@@ -112,6 +112,15 @@
         </p>
 
         <p>
+          A conformant <code>did:nostr</code> identifier MUST be a valid secp256k1 x-only public key: its
+          32-byte value MUST be a field element (<code>x &lt; p</code>, where <code>p</code> is the secp256k1
+          field prime) and the x-coordinate of a point on the curve. Resolvers SHOULD validate the
+          identifier; the key transformation and minimal resolution MAY treat a presumed-valid identifier as
+          opaque hexadecimal, so offline resolution need not perform elliptic-curve arithmetic on
+          already-trusted input.
+        </p>
+
+        <p>
           All DID documents MUST include a <code>type</code> field with the value <code>"DIDNostr"</code> 
           to enable proper linked data processing and disambiguation per httpRange-14.
         </p>
