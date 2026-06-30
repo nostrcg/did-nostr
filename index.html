@@ -430,10 +430,11 @@
     "created_at": 1737906600
 }</pre>
         <p>
-          The <code>created_at</code> field is the <code>created_at</code> of the latest Nostr profile (kind 0)
-          event (Unix seconds), allowing clients to determine profile freshness and implement intelligent
-          caching strategies. It is the part-level provenance for the profile; the subject-level aggregate
-          across all signed parts is the <a href="#modified-field"><code>modified</code></a> field.
+          The <code>created_at</code> field contains the <code>event.created_at</code> of the latest Nostr
+          profile (kind 0) event, in Unix seconds, allowing clients to determine profile freshness and
+          implement intelligent caching strategies. It is the part-level provenance for the profile; the
+          subject-level aggregate across all signed parts is the
+          <a href="#modified-field"><code>modified</code></a> field.
         </p>
         <p>
           <strong>Note:</strong> For Nostr developers: the <code>created_at</code> field is
