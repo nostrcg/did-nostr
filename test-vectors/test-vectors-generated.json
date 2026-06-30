@@ -14,7 +14,7 @@
       },
       {
         "name": "all_zeros",
-        "description": "All-zero public key (x=0 is a valid secp256k1 x-coordinate -- treated as opaque hex in default mode)",
+        "description": "All-zero public key (x=0 is a valid field element but not a point on the curve -- treated as opaque hex in default mode, rejected with crypto-validation)",
         "input": "0000000000000000000000000000000000000000000000000000000000000000",
         "output": "fe701020000000000000000000000000000000000000000000000000000000000000000",
         "roundtrip": true
@@ -86,6 +86,12 @@
         "name": "error_x_not_field_element",
         "description": "x-coordinate >= field prime p -- rejected by crypto-validation",
         "input": "fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc30",
+        "error": "InvalidPublicKey"
+      },
+      {
+        "name": "error_x_not_on_curve",
+        "description": "x-coordinate < p but not a point on the curve (x=0) -- rejected by crypto-validation",
+        "input": "0000000000000000000000000000000000000000000000000000000000000000",
         "error": "InvalidPublicKey"
       },
       {
