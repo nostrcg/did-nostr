@@ -273,8 +273,9 @@
   </pre>
           <p>This complete document enables social applications to resolve identity, profile, relays, and social graph information in a single operation.</p>
           <p>
-            For identities with large follow lists, the service array could include a FollowsEndpoint 
-            for complete access to thousands of follows without bloating the DID document.
+            For identities with large follow lists, the document can include a bounded subset of follows;
+            the complete, signed list is the source kind 3 event, retrievable from the relays advertised in
+            the document.
           </p>
         </section>
       </section>
@@ -480,30 +481,22 @@
           Nostr kind 3 events, making this social graph data available through standard DID resolution.
         </p>
         <p>
-          <strong>Scalability Consideration:</strong> For identities with large follow lists (thousands of follows),
-          implementations SHOULD use a hybrid approach:
+          <strong>Scalability Consideration:</strong> For identities with large follow lists (thousands of
+          follows), implementations SHOULD include a bounded subset in the document — for example, the first
+          100&ndash;500 most recent follows:
         </p>
-        <ul>
-          <li>Include a truncated list (e.g., first 100-500 most recent follows)</li>
-          <li>Provide a service endpoint for complete follow list retrieval</li>
-        </ul>
         <pre class="example">
 "follows": [
-    "did:nostr:32e182...",  // First 100 follows included
+    "did:nostr:32e182...",  // bounded subset, e.g. first 100
     "did:nostr:46fcbe...",
-    // ... up to 100 entries
-],
-"service": [
-    {
-        "id": "#follows-api",
-        "type": "FollowsEndpoint",
-        "serviceEndpoint": "https://api.example.com/did/follows/{did}"
-    }
+    // ... up to a fixed limit
 ]</pre>
         <p>
-          This hybrid approach provides immediate access to recent follows while maintaining 
-          document size limits and offering complete data access when needed. This pattern 
-          addresses the scalability challenge shared with other social protocols like ActivityPub.
+          The complete, signed follow list is the source kind 3 event itself, retrievable from the relays
+          advertised in the document. Bounding the inline list keeps the document small and cacheable while
+          the full list remains available from its verifiable source — the same scalability challenge other
+          social protocols (e.g. ActivityPub collections) face, resolved here by deferring to the relay layer
+          rather than re-serving the list through a separate endpoint.
         </p>
       </section>
 
