@@ -581,7 +581,8 @@
           <p>
             where <code>&lt;pubkey&gt;</code> is the 64-character lowercase hexadecimal public key and the path
             ends in the <code>.json</code> suffix. The endpoint SHOULD return a complete DID document (minimal
-            or enhanced) with media type <code>application/did+json</code>.
+            or enhanced) with media type <code>application/did+json</code>, or
+            <code>application/did+ld+json</code> for the JSON-LD representation these documents use.
           </p>
           <p>
             When serving DID documents via HTTP, servers SHOULD include the following headers:
@@ -666,7 +667,7 @@ Last-Modified: Sun, 26 Jan 2025 15:50:00 GMT</code></pre>
         <p>
           The <code>did:nostr</code> identifier is permanent: the key-to-DID binding cannot be changed.
           The DID document, however, is a projection of signed Nostr events and is updated through the event
-          layer &mdash; publishing a newer kind 0 (profile), kind 3 (follows), or kind 10002 (relays) event
+          layer &mdash; publishing a newer kind 0 (profile), kind 3 (contact list), or kind 10002 (relays) event
           changes what the document projects on the next resolution. The in-graph
           <a href="#modified-field"><code>modified</code></a> field reflects the most recent such change.
         </p>
