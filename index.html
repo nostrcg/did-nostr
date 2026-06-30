@@ -318,13 +318,11 @@
         </ol>
         
         <p>
-          <strong>Note on Parity Bytes:</strong> While most implementations default to the 0x02 prefix 
-          for even y-coordinates, Nostr applications may generate keys with either 0x02 or 0x03 prefixes.
-          Implementations SHOULD handle both cases when constructing the compressed public key format.
-          Both parities occur in practice because a key may be derived by tweaking. For example, taproot
-          or <a href="https://blocktrails.org/">blocktrails</a> key-chaining adds a scalar to the key at
-          each step, so the resulting point's y-coordinate parity is not predictable in advance and the
-          true parity MUST be carried rather than assumed to be even.
+          <strong>Note on Parity Bytes:</strong> A <code>did:nostr</code> identifier is an x-only public
+          key. Under BIP-340, an x-only key denotes the point with even y-coordinate, encoded with the
+          <code>0x02</code> prefix when constructing the compressed public key. An implementation that holds
+          the full public key &mdash; for example, one derived by additive tweaking &mdash; may encounter odd
+          y-parity, encoded with the <code>0x03</code> prefix. Implementations SHOULD accept both prefixes.
         </p>
         <p>
           The <code>Multikey</code> representation (rather than a raw-hex sibling encoding) was adopted
