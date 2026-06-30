@@ -258,7 +258,8 @@
     "follows": [
         "did:nostr:32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
         "did:nostr:46fcbe3065eaf1ae7811465924e48923363ff3f526bd6f73d7c184147700e3a8"
-    ]
+    ],
+    "modified": "2025-01-26T15:30:00Z"
 }
   </pre>
           <p>This complete document enables social applications to resolve identity, profile, relays, and social graph information in a single operation.</p>
@@ -408,8 +409,10 @@
     "timestamp": 1737906600
 }</pre>
         <p>
-          The <code>timestamp</code> field contains the <code>created_at</code> value from the latest Nostr profile event (Unix seconds), 
-          allowing clients to determine profile freshness and implement intelligent caching strategies.
+          The <code>timestamp</code> field contains the <code>created_at</code> value from the latest Nostr profile event (Unix seconds),
+          allowing clients to determine profile freshness and implement intelligent caching strategies. It is the
+          part-level provenance for the profile; the subject-level aggregate across all signed parts is the
+          <a href="#modified-field"><code>modified</code></a> field.
         </p>
         <p>
           <strong>Note:</strong> For Nostr developers: the <code>timestamp</code> field contains the same value as 
@@ -481,6 +484,35 @@
           addresses the scalability challenge shared with other social protocols like ActivityPub.
         </p>
       </section>
+
+      <section id="modified-field">
+        <h3>Modified Field (DID Subject Provenance)</h3>
+        <p>
+          A DID Document that composes signed parts (profile, follows, relays) SHOULD include a
+          <code>modified</code> field giving the DID subject's most recent change time:
+        </p>
+        <pre class="example">
+"modified": "2025-01-26T15:30:00Z"</pre>
+        <p>
+          The <code>modified</code> field is the surface form of <code>dcterms:modified</code> (defined in
+          the <code>did:nostr</code> context, typed as <code>xsd:dateTime</code>). Its value is the most
+          recent <code>created_at</code> across all signed parts composed into the document &mdash; that is,
+          <code>max(created_at)</code> over the source kind&nbsp;0 (profile), kind&nbsp;3 (follows), and
+          kind&nbsp;10002 (relays) events &mdash; serialized as an ISO&nbsp;8601 UTC timestamp.
+        </p>
+        <p>
+          Because the value is derived solely from the signed source events, every mirror computes the same
+          <code>modified</code> for the same state, and only changes to signed subject data affect it.
+        </p>
+        <p>
+          This lets a consumer detect staleness and avoid overwriting newer state with older &mdash; for
+          example, an application about to publish a follow list can compare its cached kind&nbsp;3
+          <code>created_at</code> against the document's <code>modified</code> and re-fetch before writing.
+          A consumer performing such a check MUST NOT treat a missing <code>modified</code> as evidence that
+          its cached copy is current; absence means the change time is unknown, and the consumer MUST fall
+          back to its conservative path.
+        </p>
+      </section>
     </section>
     <section id="conformance">
       <p>
@@ -537,11 +569,16 @@
           <p>
             When serving DID documents via HTTP, servers SHOULD include the following headers:
           </p>
-          <pre><code>Nostr-Timestamp: 1737906600
+          <pre><code>ETag: "9f2c1d8a7b3e4f06"
 Cache-Control: max-age=3600
 Last-Modified: Sun, 26 Jan 2025 15:30:00 GMT</code></pre>
           <p>
-            The <code>Nostr-Timestamp</code> header contains the Unix timestamp when the DID document was generated or refreshed. This enables clients to check freshness without parsing the JSON body, allowing for efficient caching strategies.
+            Servers SHOULD include an <code>ETag</code> as an opaque validator for the document
+            representation, enabling standard <code>If-None-Match</code> conditional requests; its computation
+            basis is implementation-defined. The <code>ETag</code> changes whenever the served bytes change,
+            so it captures representation-level differences (such as which mirror served the document) that
+            the in-graph <a href="#modified-field"><code>modified</code></a> field does not. The earlier
+            <code>Nostr-Timestamp</code> header is removed in favor of <code>modified</code>.
           </p>
           <p>
             This enables fast, cacheable resolution without requiring cryptographic computation or relay queries. Servers can serve minimal documents for offline-first scenarios or enhanced documents with service endpoints and profile metadata.

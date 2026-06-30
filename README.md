@@ -34,7 +34,7 @@ When a Nostr DID is resolved, it produces a DID Document like this:
 
 ```json
 {
-  "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
+  "@context": ["https://www.w3.org/ns/cid/v1", "https://w3id.org/nostr/context"],
   "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
   "type": "DIDNostr",
   "verificationMethod": [
@@ -54,7 +54,7 @@ When a Nostr DID is resolved, it produces a DID Document like this:
 
 ```json
 {
-  "@context": ["https://w3id.org/did", "https://w3id.org/nostr/context"],
+  "@context": ["https://www.w3.org/ns/cid/v1", "https://w3id.org/nostr/context"],
   "id": "did:nostr:124c0fa99407182ece5a24fad9b7f6674902fc422843d3128d38a0afbee0fdd2",
   "type": "DIDNostr",
   "verificationMethod": [
@@ -83,7 +83,8 @@ When a Nostr DID is resolved, it produces a DID Document like this:
   "follows": [
     "did:nostr:32e1827635450ebb3c5a7d12c1f8e7b2b514439ac10a67eef3d9fd9c5c68e245",
     "did:nostr:46fcbe3065eaf1ae7811465924e48923363ff3f526bd6f73d7c184147700e3a8"
-  ]
+  ],
+  "modified": "2025-01-26T15:30:00Z"
 }
 ```
 
@@ -95,6 +96,7 @@ These documents define:
 - **Optional service endpoints** for Nostr relays (URLs at origin level MUST include trailing slash)
 - **Optional profile information** from kind 0 Nostr events with timestamp for freshness
 - **Optional social graph** with follows array derived from kind 3 contact lists
+- **DID subject change time** via `modified` (most recent `created_at` across signed parts) for staleness detection and safe cross-app writes
 
 ## Resolution Methods
 
